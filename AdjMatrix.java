@@ -361,10 +361,10 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	previous[0] = vert1_location;
 
 	// Array for storing edges.
-	int distance = findedges(vert1_location, vert2_location, previous, moves++);
+	int distance = findedges(vert1_location, vert2_location, previous, moves);
 				
         // if we reach this point, source and target are disconnected
-        return -1;    	
+        return distance;    	
     } // end of shortestPathDistance()
 
 
@@ -372,19 +372,16 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     public int findedges(int source, int target, int previous[], int counter){
 
 	// For debug purposes;
-	System.out.println("Source: " + source);
-	System.out.println("Target: " + target);
-	System.out.println("Counter: " + counter);
+	//System.out.println("Source: " + source);
+	//System.out.println("Target: " + target);
+	//System.out.println("Counter: " + counter);
 	
 	// Array 
 	int[] edges = new int[verlabels.size()];
 
 	// Array counter;
 	int array_counter = 0;
-	int distance;
-
-	// Incrementing counter;
-	counter++;
+	int distances;
 
 	// Finding all edges in the matrix;
 	for(int k = 0; k < verlabels.size(); k++){
@@ -422,30 +419,32 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Checking if the array has the target;	
 	for(int k = 0; k < array_counter; k++){
 
-		// For debug purposes;
-		System.out.println(edges[k]);
-
-
 		if(edges[k] == target){
 
-			return counter;		
+			return counter + 1;		
+		}
+	}
+
+	// Testing if the array has the target;	
+	for(int k = 0; k < array_counter; k++){
+
+		distances =  findedges(edges[k], target, previous, counter + 1);		
+
+		if(distances == 0){
+			
+			return 0;
 		}else {
 
-			distance = findedges(edges[k], target, previous, counter);
-
-			if(distance != -1){
-
-				return counter;
-
-			}			
+			return distances;
 		}
+	
 	}
 
 	
 
-	// If nothing calling for each edge adding	
+	// If nothing calling for each edge adding;	
 
-	return counter;
+	return 0;
 
     }
 
