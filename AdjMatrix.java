@@ -178,7 +178,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			temp++;
 		} 
 		
-		// Setting the last variable in the array to null;
+		// Deleting the last array element;
 		verlabels.remove(verlabels.size() - 1);
 		
 		// Reseting the values;
@@ -187,7 +187,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		// For debug purposes;
 		System.out.println("[!] Verlabels array reshuffled.");
 
-		// Shuffling the boolean matrix to -1;
+		// Shuffling the boolean matrix (horizontally) to -1;
 		while(temp < 10){
 
 			for(int i = 0; i < 10; i++){
@@ -195,11 +195,10 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 				try{
 					if(i == adjmatrix.length - 1){
 	
-						adjmatrix[temp][i] = false;
+						adjmatrix[i][temp] = false;
 
 					}else {
 
-						adjmatrix[temp][i] = adjmatrix[temp + 1][i];
 						adjmatrix[i][temp] = adjmatrix[i][temp + 1];
 					}
 
@@ -213,7 +212,8 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}
 
 		temp = location;
-
+	
+		// Shuffling the boolean matrix vertically;
 		while(temp < 10){
 
 			for(int i = 0; i < 10; i++){
