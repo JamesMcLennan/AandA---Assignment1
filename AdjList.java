@@ -13,33 +13,12 @@ class node{
 	public Object vertex;
 	public node nextNode;
 	public node prevNode;
-	public int size;
 	
 	//Constructor for new nodes with T input.
 	public node(Object vertInput) {
 		vertex = vertInput;
 		nextNode = null;
 		prevNode = null;
-	}
-	
-	public Object getVertex() {
-		return vertex;
-	}
-	
-	public node findVertex(node head, Object data) {
-		node temp = null;
-		while(head != null) {
-			if(head.vertex.equals(data)) {
-				return head;
-			}
-			if(head.nextNode == null) {
-				head = null;
-			}
-			else {
-				head = head.nextNode;
-			}
-		}
-		return temp;
 	}
 	
 	//Testing print for new vertices added
@@ -79,8 +58,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	for(int i = 0; i < LinkedArray.length; i++) {
     		if(LinkedArray[i].vertex == null) {
     			LinkedArray[i] = newNode; 
-    			LinkedArray[i].size++; //Temp size of list
-		    	newNode.print(); //Testing print.
 		    	break;
 		    }
     	}
@@ -89,35 +66,52 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     
     public void addEdge(T srcLabel, T tarLabel) {
         // Implement me!
-    	Object copy = null;
-    	node search = null, source = null, target = null;
+    	node source = null, target = null;
     	boolean srcFound = false, tarFound = false;
     	
     	for(int i = 0; i < LinkedArray.length; i++) {
     		node array = LinkedArray[i];
     		if(array.vertex != null) {
-    			search = array.findVertex(array, srcLabel);
-    			if(search != null) {
-    				System.out.println("[!] Source found: " + search.vertex);
-    				source = search;
-    				srcFound = true;
-    			}
-    		}
-    		if(array.vertex != null) {
-    			search = array.findVertex(array, tarLabel);
-    			if(search != null) {
-    				System.out.println("[!] Target found: " + search.vertex);
-    				target = search;
-    				tarFound = true;
-    			}
+    			if(array.vertex.equals(srcLabel)) {
+	    			System.out.println("[!] Source found: " + array.vertex);
+	    			source = array;
+	    			srcFound = true;
+	    		}
+	    		if(array.vertex.equals(tarLabel)) {
+	    			System.out.println("[!] Target found: " + array.vertex);
+	    			target = array;
+	    			tarFound = true;
+	    		}
     		}
     	}
     	
     	if(srcFound == true && tarFound == true) {
-    		copy = target.getVertex();
-    		node newTarget = new node(copy);
-    		source.nextNode = newTarget;
-    		target.vertex = null;
+    		node srcLast = null, tarLast = null;
+    		
+    		if(source.nextNode == null) {
+    			source.nextNode = target;
+    		}
+    		else {
+    			srcLast = source;
+    			while (srcLast.nextNode != null) {
+    				srcLast = srcLast.nextNode;
+    			}
+    			srcLast.nextNode = target;
+    		}
+    		
+    		if(target.nextNode == null) {
+    			target.nextNode = source;
+    		}
+    		else {
+    			tarLast = target;
+    			while (tarLast.nextNode != null) {
+    				tarLast = tarLast.nextNode;
+    			}
+    			tarLast.nextNode = source;
+    		}
+    	}
+    	else {
+    		System.out.println("[!] Nup");
     	}
     	
     } // end of addEdge()
@@ -133,7 +127,13 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     
     
     public void removeVertex(T vertLabel) {
-        // Implement me!
+        for(int i = 0; i < LinkedArray.length; i++) {
+        	if(LinkedArray[i].vertex != null) {
+        		if(LinkedArray[i].vertex.equals(vertLabel)) {
+        			LinkedArray[i].vertex = null;
+        		}
+        	}
+        }
     } // end of removeVertex()
 	
     
@@ -144,17 +144,23 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     
     
 	public void printVertices(PrintWriter os) {
-    	//node temp;
     	for(int i = 0; i < LinkedArray.length; i++) {
     		if(LinkedArray[i].vertex != null) {
-    			LinkedArray[i].printList(LinkedArray[i]);
+    			System.out.print(LinkedArray[i].vertex + " ");
     		}
     	}	
+    	System.out.println("");
     } // end of printVertices()
 	
     
     public void printEdges(PrintWriter os) {
-        // Implement me!
+        for(int i = 0; i < LinkedArray.length; i++) {
+        	if(LinkedArray[i].vertex != null) {
+        		if(LinkedArray[i].nextNode != null) {
+        			//Implement loop to print nodes.
+        		}
+        	}
+        }
     } // end of printEdges()
     
     
