@@ -12,33 +12,20 @@ import java.util.*;
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
 
-	/**
-	 * Contructs empty graph.
-	 */
+    // Arrays;
     protected ArrayList<T> verlabels;
     protected boolean[][] adjmatrix;
 
-    // Variables for method shortestdistance;
+    // Variables;
     int moves = 0;
 
     public AdjMatrix() {
 
-	// Implementing arrays for storing data (For now kept as 10).         
-	adjmatrix = new boolean[10][10];
+	// Implementing arrays for storing data (Starting off at 1).         
+	adjmatrix = new boolean[1][1];
 	verlabels = new ArrayList<T>();
 	
-	// Setting the arrays to default values.
-	for(int i = 0; i < 10; i++){
-
-
-		for(int k = 0; k < adjmatrix.length; k++){
-
-
-			adjmatrix[i][k] = false;
-
-		}
-
-	}
+	adjmatrix[0][0] = false;
 	
 	// Printing for debug use.
 	System.out.println("[!] AdjMaxtrix initialised.");
@@ -49,16 +36,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void addVertex(T vertLabel) {
 
-		// Checking if the array is empty;
-		if(verlabels.size() == 0){
-
-			verlabels.add(vertLabel);
-
-			// For debug purposes.
-			System.out.println("[!] Vertex Added!");
-
-		}else {
-
 		// Checking if variable exists;
 		if(findvertex(vertLabel) != -1){
 	
@@ -68,10 +45,24 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 			verlabels.add(vertLabel);
 
+			// Checking if the size of the matrix has changed;
+			if(adjmatrix.length < verlabels.size()){
+			
+				// For debug purposes.
+				System.out.println("[!] Discrepency in adjmatrix size and verlabels found.");
+				System.out.println("[!] Current size: " + adjmatrix.length);
+
+				// Calling the method to increase the adjmatrix.
+				adjmatrix = resizeArray(adjmatrix);
+
+				System.out.println("[!] New size: " + adjmatrix.length);
+				
+			}
+
 			// For debug purposes.
 			System.out.println("[!] Vertex Added!");
 		}
-	}
+	
 
     } // end of addVertex()
 	
@@ -236,6 +227,20 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			}
 
 			temp++;
+		}
+
+		// Checking if the size of the matrix has changed;
+		if(adjmatrix.length > verlabels.size()){
+			
+			// For debug purposes.
+			System.out.println("[!] Discrepency in adjmatrix size and verlabels found.");
+			System.out.println("[!] Current size: " + adjmatrix.length);
+
+			// Calling the method to increase the adjmatrix.
+			adjmatrix = resizeArray(adjmatrix);
+
+			System.out.println("[!] New size: " + adjmatrix.length);
+				
 		}
 				
 	}
@@ -447,7 +452,49 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	return 0;
 
     }
+     
+    public boolean[][] resizeArray(boolean[][] adjmatrix){
 
+	boolean temparray[][] = new boolean[verlabels.size()][verlabels.size()];
+
+
+	for(int i = 0; i < verlabels.size(); i++){
+		for(int k = 0; k < verlabels.size(); k++){
+
+			try{
+
+				temparray[i][k] = adjmatrix[i][k];
+
+			}catch(ArrayIndexOutOfBoundsException e){
+
+				// Do nothing.
+			}
+
+		}
+	}
+		
+	// Creating a new size array;
+	adjmatrix = new boolean[verlabels.size()][verlabels.size()];
+
+	for(int i = 0; i < verlabels.size(); i++){
+		for(int k = 0; k < verlabels.size() ; k++){
+			
+			try{
+	
+				adjmatrix[i][k] = temparray[i][k];
+
+			}catch(ArrayIndexOutOfBoundsException e){
+
+				// Do nothing.
+			}
+		}
+	}	
+
+
+
+
+	return adjmatrix;
+    }
 	
     public int findvertex(T vertex){
 
@@ -460,26 +507,20 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 		try{
 			if(verlabels.get(i).equals(vertex)){
-			
 				// For debug purposes.
 				System.out.println("[!] Found Label at: " + i + ".");
 
 				location = i;
-				break;					
-				
+				break;							
 			} 
-
 
 		}catch (NullPointerException e){
 
 			// Do nothing;
 		}
-	
-
 	}
 
-	return location;
-	
+	return location;	
     }
     
 } // end of class AdjMatrix
