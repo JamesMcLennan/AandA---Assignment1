@@ -10,32 +10,77 @@ import java.util.*;
  */
 
 class node{
-	public Object vertex;
-	public node nextNode;
-	public node prevNode;
+	public Object vertex; //Data of Node (Vertex)
+	public node nextNode; // Pointer to next Node
 	
 	//Constructor for new nodes with T input.
 	public node(Object vertInput) {
-		vertex = vertInput;
-		nextNode = null;
-		prevNode = null;
+		vertex = vertInput; //Create node with vertInput
+		nextNode = null; //Initial nextNode is null
 	}
 	
-	//Testing print for new vertices added
-	public void print() {
-		if(vertex != null) {
-			System.out.print(vertex + " ");
+	//Print edges in list - NEED TO CHANGE OS.PRINT
+	public void printEdge(node list, PrintWriter os) {
+		node head = list; 
+		while(list.vertex != null) {
+			if(list.nextNode != null) {
+				os.println(head.vertex + " " + list.nextNode.vertex + " ");
+				list = list.nextNode;
+			}
+			
+			else {
+				break;
+			}
 		}
 	}
 	
-	public void printList(node head) {
-		while(head.vertex != null) {
-			System.out.print(head.vertex + " ");
-			if(head.nextNode != null) {
-				head = head.nextNode;
+	public void deleteNodeInList(node delTarNode, Object vertexTar) {
+		while(delTarNode.vertex != null) {
+			if(delTarNode.nextNode != null) {
+				if(delTarNode.nextNode.vertex.equals(vertexTar)) {
+					delTarNode.nextNode.vertex = null;
+					
+					if(delTarNode.nextNode.nextNode != null) {
+						delTarNode.nextNode = delTarNode.nextNode.nextNode;
+					}
+					
+					else {
+						delTarNode.nextNode = null;
+					}
+				}
+				
+				else {
+					delTarNode = delTarNode.nextNode;
+				}
 			}
+			
 			else {
-				System.out.println("");
+				break;
+			}
+		}
+	}
+	
+	public void findNodeInList(node head, Object vertexTar) {
+		while(head.vertex != null) {
+			if(head.nextNode != null) {
+				if(head.nextNode.vertex.equals(vertexTar)) {
+					head.nextNode.vertex = null;
+					
+					if(head.nextNode.nextNode != null) {
+						head.nextNode = head.nextNode.nextNode;
+					}
+					
+					else {
+						head.nextNode = null;
+					}
+				}
+				
+				else {
+					head = head.nextNode;
+				}
+			}
+			
+			else {
 				break;
 			}
 		}
@@ -53,68 +98,116 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     } // end of AdjList()
     
     public void addVertex(T vertLabel) {
-    	node newNode = new node(vertLabel);
-    	
+    	boolean exists = false;
+
     	for(int i = 0; i < LinkedArray.length; i++) {
-    		if(LinkedArray[i].vertex == null) {
-    			LinkedArray[i] = newNode; 
-		    	break;
-		    }
+    		if(LinkedArray[i].vertex != null) {
+    			if(LinkedArray[i].vertex.equals(vertLabel)) {
+    				exists = true;
+    				break;
+    			}
+    		}
     	}
+    	
+    	if(exists == false) {
+    		for(int i = 0; i < LinkedArray.length; i++) {
+    			if(LinkedArray[i].vertex == null) {
+    				node newNode = new node(vertLabel);
+    				LinkedArray[i] = newNode;
+    				break;
+    			}
+    		}
+    	}
+    	
     } // end of addVertex()
 	
     
     public void addEdge(T srcLabel, T tarLabel) {
         // Implement me!
     	node source = null, target = null;
-    	boolean srcFound = false, tarFound = false;
+    	boolean srcFound = false, tarFound = false, exists = false;
     	
     	for(int i = 0; i < LinkedArray.length; i++) {
-    		node array = LinkedArray[i];
-    		if(array.vertex != null) {
-    			if(array.vertex.equals(srcLabel)) {
-	    			System.out.println("[!] Source found: " + array.vertex);
-	    			source = array;
-	    			srcFound = true;
-	    		}
-	    		if(array.vertex.equals(tarLabel)) {
-	    			System.out.println("[!] Target found: " + array.vertex);
-	    			target = array;
-	    			tarFound = true;
+    		node find = LinkedArray[i];
+    		if(find.vertex != null) {
+    			if(find.vertex.equals(srcLabel)) {
+    				source = find;
+	    			while(find.vertex != null) {
+	    				if(find.nextNode != null) {
+	    					if(find.nextNode.vertex.equals(tarLabel)) {
+	    						exists = true;
+	    						break;
+	    					}
+	    					
+	    					else {
+	    						find = find.nextNode;
+	    					}
+	    				}
+	    				
+	    				else {
+	    					break;
+	    				}
+	    			}
 	    		}
     		}
     	}
     	
-    	if(srcFound == true && tarFound == true) {
-    		node srcLast = null, tarLast = null;
-    		
-    		if(source.nextNode == null) {
-    			source.nextNode = target;
-    		}
-    		else {
-    			srcLast = source;
-    			while (srcLast.nextNode != null) {
-    				srcLast = srcLast.nextNode;
-    			}
-    			srcLast.nextNode = target;
-    		}
-    		
-    		if(target.nextNode == null) {
-    			target.nextNode = source;
-    		}
-    		else {
-    			tarLast = target;
-    			while (tarLast.nextNode != null) {
-    				tarLast = tarLast.nextNode;
-    			}
-    			tarLast.nextNode = source;
-    		}
+    	if(exists != true) {
+	    	for(int i = 0; i < LinkedArray.length; i++) {
+	    		node array = LinkedArray[i];
+	    		if(array.vertex != null) {
+	    			if(array.vertex.equals(srcLabel)) {
+		    			source = array;
+		    			srcFound = true;
+		    		}
+		    		if(array.vertex.equals(tarLabel)) {
+		    			target = array;
+		    			tarFound = true;
+		    		}
+	    		}
+	    	}
+	    	
+	    	if(srcFound == true && tarFound == true) {
+	    		Object temp = null;
+		   		node srcLast = null, tarLast = null;
+		    		
+		   		if(source.nextNode == null) {
+		   			temp = target.vertex;
+		   			node addEdge = new node(temp);
+		   			source.nextNode = addEdge;
+		   		}
+	    		
+	    		else {
+		    		srcLast = source;
+		   			temp = target.vertex;
+		   			while(srcLast.nextNode != null) {
+		   				srcLast = srcLast.nextNode;
+		   			}
+		   			node addEdge = new node(temp);
+		   			srcLast.nextNode = addEdge;
+		   		}
+		    		
+		   		if(target.nextNode == null) {
+		    		temp = source.vertex;
+		   			node addEdge = new node(temp);
+		   			target.nextNode = addEdge;
+		   		}
+		    		
+		    	else {
+		    		tarLast = target;
+		   			temp = source.vertex;
+		   			while(tarLast.nextNode != null) {
+		   				tarLast = tarLast.nextNode;
+		   			}
+	    			node addEdge = new node(temp);
+		    		tarLast.nextNode = addEdge;
+		    	}
+		    }
+	    	else {
+	   			System.err.println("Error - Please enter a valid Vertex");
+	   		}
     	}
-    	else {
-    		System.out.println("[!] Nup");
-    	}
-    	
-    } // end of addEdge()
+   	} // end of addEdge()
 	
 
     public ArrayList<T> neighbours(T vertLabel) {
@@ -127,18 +220,56 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     
     
     public void removeVertex(T vertLabel) {
-        for(int i = 0; i < LinkedArray.length; i++) {
-        	if(LinkedArray[i].vertex != null) {
-        		if(LinkedArray[i].vertex.equals(vertLabel)) {
-        			LinkedArray[i].vertex = null;
+        node temp = null;
+        boolean found = false;
+    	for(int i = 0; i < LinkedArray.length; i++) {
+        	temp = LinkedArray[i];
+        	if(temp.vertex != null) {
+        		while(temp.vertex != null) {
+        			if(temp.vertex.equals(vertLabel)) {
+        				temp.vertex = null;
+        				found = true;
+        			}			
+        			else {
+        				break;
+        			}
         		}
         	}
+        	if(found == true) {
+	        	if(temp.nextNode != null) {
+		       		temp.deleteNodeInList(temp, vertLabel);
+		       	}
+        	}
         }
+    	
+    	if(found == false) {
+    		System.err.println("Error - Please enter a valid Vertex");
+    	}
     } // end of removeVertex()
 	
     
     public void removeEdge(T srcLabel, T tarLabel) {
-        // Implement me!
+    	node source = null, target = null;
+    	boolean srcFound = false, tarFound = false;
+    	
+    	for(int i = 0; i < LinkedArray.length; i++) {
+        	node array = LinkedArray[i];
+        	if(array.vertex != null) {
+        		if(array.vertex.equals(srcLabel)) {
+        			source = array;
+	        		srcFound = true;
+	        	}
+	        	if(array.vertex.equals(tarLabel)) {
+	        		target = array;
+	        		tarFound = true;
+	        	}
+        	}
+        }
+    	
+    	if(srcFound == true && tarFound == true) {
+    		source.deleteNodeInList(source, tarLabel);
+    		target.deleteNodeInList(target, srcLabel);
+    	}
     } // end of removeEdges()
 	
     
@@ -146,10 +277,10 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 	public void printVertices(PrintWriter os) {
     	for(int i = 0; i < LinkedArray.length; i++) {
     		if(LinkedArray[i].vertex != null) {
-    			System.out.print(LinkedArray[i].vertex + " ");
+    			os.print(LinkedArray[i].vertex + " ");
     		}
     	}	
-    	System.out.println("");
+    	os.println("");
     } // end of printVertices()
 	
     
@@ -157,7 +288,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
         for(int i = 0; i < LinkedArray.length; i++) {
         	if(LinkedArray[i].vertex != null) {
         		if(LinkedArray[i].nextNode != null) {
-        			//Implement loop to print nodes.
+        			LinkedArray[i].printEdge(LinkedArray[i], os);
         		}
         	}
         }
