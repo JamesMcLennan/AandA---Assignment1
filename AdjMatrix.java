@@ -47,15 +47,11 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 			// Checking if the size of the matrix has changed;
 			if(adjmatrix.length < verlabels.size()){
-			
-				// For debug purposes.
-				System.out.println("[!] Discrepency in adjmatrix size and verlabels found.");
-				System.out.println("[!] Current size: " + adjmatrix.length);
 
 				// Calling the method to increase the adjmatrix.
 				adjmatrix = resizeArray(adjmatrix);
 
-				System.out.println("[!] New size: " + adjmatrix.length);
+
 				
 			}
 
@@ -80,17 +76,12 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if(verlabels.get(i).equals(srcLabel)){
 			
 				src_location = i;
-			
-				// For debug purposes.
-				System.out.println("[!] Found srcLabel at: " + i + ".");	
+				
 			} 
 
 			if(verlabels.get(i).equals(tarLabel)){
 			
 				tar_location = i;
-			
-				// For debug purposes.
-				System.out.println("[!] Found tarLabel at: " + i + ".");	
 			} 		
 
 		}catch (NullPointerException e){
@@ -108,9 +99,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 		adjmatrix[src_location][tar_location] = true;
 		adjmatrix[tar_location][src_location] = true;
-
-		// For debug purposes.
-		System.out.println("[!] AdjMatrix updated.");
 	}
 
     } // end of addEdge()
@@ -175,9 +163,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		// Reseting the values;
 		temp = location;
 
-		// For debug purposes;
-		System.out.println("[!] Verlabels array reshuffled.");
-
 		// Shuffling the boolean matrix (horizontally) to -1;
 		while(temp < 10){
 
@@ -231,16 +216,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 		// Checking if the size of the matrix has changed;
 		if(adjmatrix.length > verlabels.size()){
-			
-			// For debug purposes.
-			System.out.println("[!] Discrepency in adjmatrix size and verlabels found.");
-			System.out.println("[!] Current size: " + adjmatrix.length);
-
+		
 			// Calling the method to increase the adjmatrix.
-			adjmatrix = resizeArray(adjmatrix);
-
-			System.out.println("[!] New size: " + adjmatrix.length);
-				
+			adjmatrix = resizeArray(adjmatrix);		
 		}
 				
 	}
@@ -272,10 +250,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 			adjmatrix[src_location][tar_location] = false;
 			adjmatrix[tar_location][src_location] = false;
-
-
-			// For debug purposes.
-			System.out.println("[!] AdjMatrix updated.");
 		}
 	}
 
@@ -284,49 +258,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
     
     public void printVertices(PrintWriter os) {
-
-	
+		
 	// Printing the verlabels.
 	for(int i = 0; i < verlabels.size(); i++){
 
-		System.out.print("  " + verlabels.get(i)+ "   ");
+		os.print(verlabels.get(i)+ " ");
 	}
-
-	System.out.println(" ");
-
-	for(int i = 0; i < verlabels.size(); i++){
-
-		for(int l = 0; l < verlabels.size(); l++){
-
-			System.out.print("------");
-
-		}	
-
-		System.out.println("");
-
-		for(int k = 0; k < verlabels.size(); k++){
-		
-			if(adjmatrix[i][k] == false){
-				
-				System.out.print("  0  |");
-
-			}else {
-
-				System.out.print("  1  |");
-			}
-		}
-
-		System.out.println("");
-
-	}
-
-	for(int l = 0; l < verlabels.size(); l++){
-
-			System.out.print("------");
-
-	}
-
-	System.out.println("");
+	
+	os.println("");
 
     } // end of printVertices()
 	
@@ -375,18 +314,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     // Recursive loop;
     public int findedges(int source, int target, int previous[], int counter){
-
-	// For debug purposes;
-	//System.out.println("Source: " + source);
-	//System.out.println("Target: " + target);
-	//System.out.println("Counter: " + counter);
 	
 	// Array 
 	int[] edges = new int[verlabels.size()];
 
 	// Array counter;
 	int array_counter = 0;
-	int distances;
+	int distances[];
+        int min; 
 
 	// Finding all edges in the matrix;
 	for(int k = 0; k < verlabels.size(); k++){
@@ -430,32 +365,49 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}
 	}
 
+        // Creating distances;
+        distances = new int[array_counter];
+
 	// Testing if the array has the target;	
 	for(int k = 0; k < array_counter; k++){
 
-		distances =  findedges(edges[k], target, previous, counter + 1);		
+		distances[k] =  findedges(edges[k], target, previous, counter + 1);		
+	
+	}
 
-		if(distances == 0){
-			
-			return 0;
-		}else {
+	// Testing the arrays for lowest value;
+	min = distances[0];
 
-			return distances;
-		}
+	// Testing if the array has the target;	
+	for(int k = 1; k < array_counter; k++){
+
+		if(distances[k] < min){
+
+			min = distances[k];
+		}	
 	
 	}
 
 	
-
 	// If nothing calling for each edge adding;	
 
-	return 0;
+	return min;
 
     }
      
     public boolean[][] resizeArray(boolean[][] adjmatrix){
 
 	boolean temparray[][] = new boolean[verlabels.size()][verlabels.size()];
+
+        // Checking if the size of verlabels<T> is 1;
+        if(verlabels.size() == 1){
+
+		adjmatrix = new boolean[1][1];
+                adjmatrix[0][0] = false;
+	
+		return adjmatrix;
+
+	}
 
 
 	for(int i = 0; i < verlabels.size(); i++){
@@ -490,9 +442,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}
 	}	
 
-
-
-
 	return adjmatrix;
     }
 	
@@ -507,8 +456,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 		try{
 			if(verlabels.get(i).equals(vertex)){
-				// For debug purposes.
-				System.out.println("[!] Found Label at: " + i + ".");
 
 				location = i;
 				break;							
