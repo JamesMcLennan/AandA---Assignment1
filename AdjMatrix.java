@@ -49,10 +49,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if(adjmatrix.length < verlabels.size()){
 
 				// Calling the method to increase the adjmatrix.
-				adjmatrix = resizeArray(adjmatrix);
-
-
-				
+				adjmatrix = resizeArray(adjmatrix);		
 			}
 
 			// For debug purposes.
@@ -76,7 +73,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if(verlabels.get(i).equals(srcLabel)){
 			
 				src_location = i;
-				
 			} 
 
 			if(verlabels.get(i).equals(tarLabel)){
@@ -280,7 +276,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if(adjmatrix[i][k] == true){
 			
 				System.out.println(verlabels.get(i) + " " + verlabels.get(k));
-
 			}
 		}
 
@@ -338,8 +333,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if(found == false)
 			{
 				edges[array_counter] = k;
-				array_counter++;
-				
+				array_counter++;	
 			}
 
 		}
