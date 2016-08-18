@@ -39,7 +39,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		// Checking if variable exists;
 		if(findvertex(vertLabel) != -1){
 	
-			System.out.println("[!] Vertex already exists, please use a different value.");
+			//System.out.println("[!] Vertex already exists, please use a different value.");
 
 		}else {
 
@@ -52,8 +52,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 				adjmatrix = resizeArray(adjmatrix);		
 			}
 
-			// For debug purposes.
-			System.out.println("[!] Vertex Added!");
 		}
 	
 
@@ -263,6 +261,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
 	os.println("");
 
+	os.flush();
+
+
     } // end of printVertices()
 	
     
@@ -275,11 +276,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 			if(adjmatrix[i][k] == true){
 			
-				System.out.println(verlabels.get(i) + " " + verlabels.get(k));
+				os.println(verlabels.get(i) + " " + verlabels.get(k));
 			}
 		}
-
 	}
+	
+	os.flush();
+       
+
     } // end of printEdges()
     
     
@@ -381,11 +385,16 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}	
 	
 	}
-
 	
-	// If nothing calling for each edge adding;	
 
-	return min;
+	if(min == 0){
+	
+		return -1;
+
+        }else{
+
+		return min;
+	}
 
     }
      
