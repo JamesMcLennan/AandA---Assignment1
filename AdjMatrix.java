@@ -387,7 +387,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	}
 	
 
-	if(min == 0){
+	if(min == 0 || min == -1){
 	
 		return -1;
 
