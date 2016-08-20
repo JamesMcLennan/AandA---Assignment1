@@ -376,8 +376,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
                 	if(counter < shortest){
 
 				shortest = counter + 1;
-
-                        	System.out.println("Short: " + shortest);
    
                                 return shortest;		
 			}
