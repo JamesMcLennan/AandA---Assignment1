@@ -18,6 +18,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     // Variables;
     int moves = 0;
+    int shortest;
 
     public AdjMatrix() {
 
@@ -293,6 +294,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	int vert1_location = findvertex(vertLabel1);
 	int vert2_location = findvertex(vertLabel2);
 
+        // value for shortest;
+        shortest = verlabels.size();
+
 	// Array for storing previous;
 	int[] previous = new int[verlabels.size()];
 
@@ -320,9 +324,18 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Array counter;
 	int array_counter = 0;
 	int distances[];
-        int min; 
+        int min = verlabels.size(); 
+	
+	// Checking if counter == verlabels.size;
+        // If it is it means its reach the max distance possible;
+        // No bother continuing down the tree path;
+        if((counter == verlabels.size()) || (counter > shortest)){
 
-	// Finding all edges in the matrix;
+		return shortest;
+
+	}
+
+	// Finding all edges of the source in the matrix;
 	for(int k = 0; k < verlabels.size(); k++){
 
 		if(adjmatrix[source][k] == true){
@@ -359,10 +372,19 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 		if(edges[k] == target){
 
-			return counter + 1;		
+			// Checking if its shorter then current shortest;
+                	if(counter < shortest){
+
+				shortest = counter + 1;
+
+                        	System.out.println("Short: " + shortest);
+   
+                                return shortest;		
+			}
+		
 		}
 	}
-
+	
         // Creating distances;
         distances = new int[array_counter];
 
@@ -373,16 +395,20 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
 	}
 
-	// Testing the arrays for lowest value;
-	min = distances[0];
 
-	// Testing if the array has the target;	
-	for(int k = 1; k < array_counter; k++){
+	// Finding the lowest counter and returning.
+	for(int k = 0; k < array_counter; k++){
 
-		if(distances[k] < min){
+		try {
+			if((distances[k] < min)){
 
-			min = distances[k];
-		}	
+				min = distances[k];
+			}	
+
+		}catch(ArrayIndexOutOfBoundsException e){
+
+			// Do nothing;
+		}
 	
 	}
 	
@@ -392,6 +418,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		return -1;
 
         }else{
+		
 
 		return min;
 	}
