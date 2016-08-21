@@ -295,7 +295,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	int vert2_location = findvertex(vertLabel2);
 
         // value for shortest;
-        shortest = verlabels.size();
+        shortest = verlabels.size() - 1;
 
 	// Array for storing previous;
 	int[] previous = new int[verlabels.size()];
@@ -309,8 +309,17 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 	// Array for storing edges.
 	int distance = findedges(vert1_location, vert2_location, previous, moves);
+
+        System.out.println("Dis: " + distance);
 				
-        // if we reach this point, source and target are disconnected
+        // If distance = -1 or shortest is still the size of
+        // verlabels, means that there is no path.
+        if(distance == -1){
+
+		System.out.println("[!] No possible path.");
+		return -1;
+	}
+
         return distance;    	
     } // end of shortestPathDistance()
 
@@ -329,12 +338,26 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Checking if counter == verlabels.size;
         // If it is it means its reach the max distance possible;
         // No bother continuing down the tree path;
-        if((counter == verlabels.size()) || (counter > shortest)){
+        if(counter == verlabels.size()){
+
+		return -1;
+	}
+      
+	// If counter > shortest no need to search down the tree;
+        if(counter >= shortest){
 
 		return shortest;
 
 	}
 
+	// Array for storing previous;
+	int[] currentPrevious = new int[verlabels.size()];
+
+	// Initialising for the recusive loop.
+	for(int i = 0; i < previous.length; i++){
+		previous[i] = previous[i];
+	}
+ 
 	// Finding all edges of the source in the matrix;
 	for(int k = 0; k < verlabels.size(); k++){
 
@@ -342,11 +365,13 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 			// Checking if its in the previous;
 			boolean found = false;
+
 			for(int i = 0; i < previous.length; i++){
 				if(previous[i] == k){
 					found = true;
 				}
 			}
+
 			if(found == false)
 			{
 				edges[array_counter] = k;
@@ -378,6 +403,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 				shortest = counter + 1;
    
                                 return shortest;		
+			}else{
+
+				return shortest;
 			}
 		
 		}
@@ -389,7 +417,8 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Testing if the array has the target;	
 	for(int k = 0; k < array_counter; k++){
 
-		distances[k] =  findedges(edges[k], target, previous, counter + 1);		
+		distances[k] =  findedges(edges[k], target, currentPrevious , counter + 1);
+	
 	
 	}
 
@@ -401,6 +430,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			if((distances[k] < min)){
 
 				min = distances[k];
+
 			}	
 
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -410,13 +440,15 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	
 	}
 	
+	System.out.println("Moves: " + counter + ", Lowest: " + shortest + "	" + "\t\tCurrent Node: " + source + ", Min: " + min);
+
 
 	if(min == 0 || min == -1){
 	
 		return -1;
 
         }else{
-		
+	
 
 		return min;
 	}
