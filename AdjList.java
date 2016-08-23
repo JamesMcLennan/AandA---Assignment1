@@ -14,7 +14,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 	static int initial = 5;
 	static int arrayListSize = 0;
 	static int arrayQueueSize = 0;
-	static int pos = 0;
+	static int exists = -1;
 	
 	private static node[] LinkedArray = new node[initial];
 	
@@ -171,6 +171,9 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 	   			System.err.println("Error - Please enter a valid Vertex");
 	   		}
     	}
+    	/*else {
+    		throw new IllegalArgumentException("[!] IA Exception *Add Edge* - Node does not exist");
+    	}*/
    	} // end of addEdge()
 	
     @SuppressWarnings("unchecked")
@@ -187,6 +190,9 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 				temp = temp.nextNode;
 			}
         }
+       /* else {
+    		throw new IllegalArgumentException("[!] IA Exception *Neighbours* - Node does not exist");
+        }*/
         return neighbours;
     } // end of neighbours()
     
@@ -217,33 +223,28 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
         	}
         }
     	
-    	if(found == false) {
-    		System.err.println("Error - Please enter a valid Vertex");
-    	}
+    	/*if(found == false) {
+    		throw new IllegalArgumentException("[!] IA Exception *RV* - Node does not exist");
+    	}*/
     } // end of removeVertex()
 	
     public void removeEdge(T srcLabel, T tarLabel) {
     	node source = null, target = null;
-    	boolean srcFound = false, tarFound = false;
+    	int srcPos = exists, tarPos = exists;
     	
-    	for(int i = 0; i < LinkedArray.length; i++) {
-        	node array = LinkedArray[i];
-        	if(array.vertex != null) {
-        		if(array.vertex.equals(srcLabel)) {
-        			source = array;
-	        		srcFound = true;
-	        	}
-	        	if(array.vertex.equals(tarLabel)) {
-	        		target = array;
-	        		tarFound = true;
-	        	}
-        	}
-        }
+    	srcPos = findVertex(LinkedArray, srcLabel);
+    	tarPos = findVertex(LinkedArray, tarLabel);
     	
-    	if(srcFound == true && tarFound == true) {
+    	if(srcPos != exists && tarPos != exists) {
+    		source = LinkedArray[srcPos];
+    		target = LinkedArray[tarPos];
+    		
     		source.deleteNodeInList(source, tarLabel);
     		target.deleteNodeInList(target, srcLabel);
     	}
+    	/*else if(srcPos == exists || tarPos == exists) {
+    		throw new IllegalArgumentException("[!] IA Exception *RE* - Node does not exist");
+    	}*/
     } // end of removeEdges()
 	
     public void printVertices(PrintWriter os) {
@@ -265,159 +266,60 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
         }
     } // end of printEdges()
     
-    public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	int srcPos = -1, tarPos = -1, queueCount = 0;
-    	Object[] queue = new Object[initial];
-    	node vertex;
-    	boolean emptyQ = false;
-    	
-    	arrayQueueSize = 0;
-    	for(int i = 0; i < queue.length; i++) { //Initialize the queue
-    		queue[i] = null;
-    	}
-    	
+    @SuppressWarnings("unchecked")
+	public int shortestPathDistance(T vertLabel1, T vertLabel2) {
+    	int srcPos = -1, tarPos = -1, prevPos = 0;
     	for(int i = 0; i < LinkedArray.length; i++) {
     		if(LinkedArray[i].visited != false) {
     			LinkedArray[i].visited = false;
     		}
     	}
     	
-    	srcPos = findVertex(LinkedArray, vertLabel1); //Find source
-    	tarPos = findVertex(LinkedArray, vertLabel2); //Find target
-    	
-    	if(tarPos != -1 && tarPos != -1)  { //if both target and source exist
-    		queue[queueCount] = LinkedArray[srcPos].vertex; //Insert source node into the queue
-    		LinkedArray[srcPos].pos = 0; //Root node pos set.
-    		LinkedArray[srcPos].visited = true;
-    		
-    		while(emptyQ != true) {
-    			if(queue[queueCount] == null) { //Check if queue no longer has items to check
-    	    		break; 
-    	    	}
-    			    			
-    			if(queueCount != 0) { //Find next element (That is not the first input).
-    	    		srcPos = findVertex(LinkedArray, queue[queueCount]); //Find new source
-    	    	}
-    			
-    			vertex = LinkedArray[srcPos];
-    			
-    			//System.out.println("Searching for: " + vertex.vertex);
-    	    	if(queue[queueCount].equals(vertLabel2)) { //Check if node matches target
-    				return vertex.pos;
-    			}
-    			
-    			else {
-    				if(vertex.nextNode != null) {
-    					queue = addNodeQueue(queue, vertex); //Add source child nodes into queue
-    					queueCount++;
-    				}
-    				else {
-    					queueCount++; //Move to next element in queue
-    				}
-    			}
-    		}
-    	}
-    	
+    	srcPos = findVertex(LinkedArray, vertLabel1);
+    	tarPos = findVertex(LinkedArray, vertLabel2);
+    	if(srcPos != -1 && tarPos != -1) {
+    		node peek = LinkedArray[srcPos];
+    		peek.parentNode = null;
+    		peek.pos = 0;
+    		ArrayList<T> neighbours = neighbours((T) peek.vertex);
+	    	Queue<node> queue = new LinkedList<node>();
+	    	int found = exists;
+	    	int path = 0;
+	    	
+	    	
+	    	while(neighbours != null) {
+	    		neighbours = neighbours((T) peek.vertex);
+	    		if(neighbours.contains(vertLabel2)) {
+	    			LinkedArray[tarPos].pos = prevPos + 1;
+	    			return LinkedArray[tarPos].pos;
+		    	}
+	    		
+	    		else {
+	    			LinkedArray[srcPos].visited = true;
+	    			for(int i = 0; i < neighbours.size(); i++) {
+		    			found = findVertex(LinkedArray, neighbours.get(i));
+		    			if(LinkedArray[found].visited != true) {
+		    				queue.add(LinkedArray[found]);
+		    				LinkedArray[found].parentNode = peek;
+		    				LinkedArray[found].pos = LinkedArray[found].parentNode.pos + 1;
+		   					prevPos = LinkedArray[found].pos;
+		   					LinkedArray[found].visited = true;
+		   				}
+		    			
+		    		}
+	    			
+	    			if(path != 0) {
+		    			queue.remove();
+		    		}
+		    	}
+	    		path++;
+	    		peek = queue.peek();
+	    		if(queue.isEmpty()) {
+	    			break;
+	    		}
+	    	}
+	    }
     	// if we reach this point, source and target are disconnected
         return disconnectedDist; 
     }
-    
-  public Object[] addNodeQueue(Object[] queue, node head) {
-    	boolean checkQueue = false;
-    	node parent = head;
-    	
-    	while(head.nextNode != null) {
-	    	for(int i = 0; i < queue.length; i++) {
-	    		if(queue[i] == null) { //Move to next null position in Queue
-	    			
-	    			checkQueue = checkQueue(LinkedArray, head.nextNode.vertex); //Check if the child has already been added into the queue
-	    			
-	    			if(checkQueue != true && arrayQueueSize != initial) {
-	    				
-	    				queue[i] = head.nextNode.vertex; //Add child into queue
-	    				head.nextNode.parentNode = parent; //Set child's parent
-	    				
-	    				head.nextNode.visited = true;
-	    				setVisited(LinkedArray, head.nextNode);
-	    				
-	    				head.nextNode.pos = head.nextNode.parentNode.pos + 1; //Set the position of the child's
-		    			setDistance(LinkedArray, head.nextNode); //Find child in LinkedArray.
-		    			
-		    			arrayQueueSize++;
-		    			break;
-		    			
-	    			}
-	    			
-	    			else if(checkQueue != true && arrayQueueSize == initial) { //***IF I GET TIME - RESEARCH AND IMPLEMENT ACTUAL QUEUE***
-	    				queue = resizeQueue(queue, head.nextNode.vertex); //Queue needs to be resized.
-	    			}
-	   			}
-    		}
-	    	head = head.nextNode;
-    	}
-    	return queue;
-    }
-    
-    public boolean checkQueue(node[] LinkedArray, Object vertex) {
-    	for(int i = 0; i < LinkedArray.length; i++) {
-    		if(LinkedArray[i].vertex.equals(vertex)) {
-    			//System.out.println("[!] " + LinkedArray[i].vertex + " matches node suggested for Queue: " + vertex);
-    			if(LinkedArray[i].visited == true) {
-        			//System.out.println("[!] " + LinkedArray[i].vertex + " has been visited");
-    				return true;
-    			}
-    			else {
-        			//System.out.println("[!] " + LinkedArray[i].vertex + " has NOT been visited");
-    				return false;
-    			}
-    		}
-    	}
-    	return false;
-    }
-    
-    public Object[] resizeQueue(Object[] queue, Object node) {
-    	Object[] tempQueue = new Object[initial];
-		int lastNodePos = 0;
-		
-		if(arrayQueueSize == initial){
-			for (int j = 0; j < LinkedArray.length; j++) {
-				tempQueue[j] = queue[j];
-			}
-			initial = initial * 2;
-			queue = new Object[initial];
-			for (int m = 0; m < tempQueue.length; m++) {
-				queue[m] = tempQueue[m];
-				lastNodePos = m + 1;
-			}
-			for(int n = lastNodePos; n < queue.length; n++) {
-				queue[n] = null;
-			}
-		}
-		queue[lastNodePos] = node;
-		arrayQueueSize++;
-		return queue;
-    }
-    
-    public void setDistance(node[] LinkedArray, node head) {
-		for(int i = 0; i < LinkedArray.length; i++) {
-			if(LinkedArray[i] != null) {
-				if(LinkedArray[i].vertex.equals(head.vertex)) {
-					LinkedArray[i].pos = head.pos;
-					break;
-				}
-			}
-		}
-	}
-    
-    public void setVisited(node[] LinkedArray, node head) {
-    	for(int i = 0; i < LinkedArray.length; i++) {
-			if(LinkedArray[i] != null) {
-				if(LinkedArray[i].vertex.equals(head.vertex)) {
-					LinkedArray[i].visited = head.visited;
-					break;
-				}
-			}
-		}
-    }
-        	
 } // end of class AdjList
