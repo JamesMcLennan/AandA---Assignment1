@@ -9,41 +9,84 @@ public class Generator{
 	// Main
 	public static void main(String[] args) throws IOException{
 
-		// 1st arg is the range from 0 - input;
-		// 2nd arg is how many lines to generate;
+		// 1st arg is the density, eg: 0.1, 0.2, etc;
+		// 2nd arg is how many vertexs vertexs;
+
 
 		// Variables for use;
-		int max = Integer.parseInt(args[0]);
-		int density = Integer.parseInt(args[1]);
-	
-	 	// Creating Printwriter;
-		PrintWriter data = new PrintWriter(new FileWriter("data.txt"));
+		double density = Double.parseDouble(args[0]);
+		int vertex = Integer.parseInt(args[1]);
+		int edges = (int) Math.round((vertex * vertex) * density);
 
 		// Creating a random;
 		Random rand_ver = new Random();
 
-		// Printing to stuff;
-		for(int i = 0; i < density; i++){
+		int[][] array = new int[edges][2];
+	
+	 	// Creating Printwriter;
+		PrintWriter data = new PrintWriter(new FileWriter("data.txt"));
 
-			int data1 = rand_ver.nextInt(max) + 1;
-			int data2 = rand_ver.nextInt(max) + 1;
+		for(int i = 0; i < edges; i++){
+			for(int k = 0; k < 2; k++){
 
-			// Checking if they're the same;
+				array[i][k] = -1;
+
+			}	
+		}
+
+		for(int l = 0; l < edges; l++){
+
+			int data1 = rand_ver.nextInt(vertex) + 1;
+			int data2 = rand_ver.nextInt(vertex) + 1;	
+
 			if(data1 == data2){
-
-				i = i - 1;
+				
+				l = l - 1;
 
 			}else{
+			
+				for(int k = 0; k < edges; k++){
 
-				data.print(data1);
-				data.print(" ");
-				data.print(data2);
-				data.print("\n");
+					if(array[k][0] == data1 && array[k][1] == data2){
+
+						l = l - 1;
+						break;
+					}else if(array[k][0] == data2 && array[k][1] == data1){
+
+						l = l - 1;
+						break;
+					}else {
+						
+						if(array[k][0] == -1 && array[k][1] == -1){
+
+							array[k][0] = data1;
+							array[k][1] = data2;
+							
+							data.print(array[k][0]);
+							data.print(" ");
+							data.print(array[k][1]);
+							data.print("\n");
+			
+							System.out.println(data1 + " " + data2);
+
+							break;
+
+
+
+						}
+					}
+
+					
+
+				}
+		
+				
+
 
 			}
 
-		}	
-		
+		}
+				
 		//Closing;
 		data.close();
 
