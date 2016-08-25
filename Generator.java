@@ -36,8 +36,8 @@ public class Generator{
 
 		for(int l = 0; l < edges; l++){
 
-			int data1 = rand_ver.nextInt(vertex) + 1;
-			int data2 = rand_ver.nextInt(vertex) + 1;	
+			int data1 = rand_ver.nextInt(5000) + 1;
+			int data2 = rand_ver.nextInt(5000) + 1;	
 
 			if(data1 == data2){
 				
@@ -66,13 +66,8 @@ public class Generator{
 							data.print(" ");
 							data.print(array[k][1]);
 							data.print("\n");
-			
-							System.out.println(data1 + " " + data2);
 
 							break;
-
-
-
 						}
 					}
 
