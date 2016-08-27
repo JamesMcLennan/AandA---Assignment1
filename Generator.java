@@ -6,12 +6,11 @@ import java.util.*;
 
 public class Generator{
 
-	// Main
+		// Main
 	public static void main(String[] args) throws IOException{
 
 		// 1st arg is the density, eg: 0.1, 0.2, etc;
 		// 2nd arg is how many vertexs vertexs;
-
 
 		// Variables for use;
 		double density = Double.parseDouble(args[0]);
