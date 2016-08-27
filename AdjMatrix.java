@@ -463,8 +463,18 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Creating a new size array;
 	adjmatrix = new boolean[verlabels.size()][verlabels.size()];
 
-	adjmatrix = temparray;
+	for(int i = 0; i < verlabels.size(); i++){
+		for(int k = 0; k < verlabels.size() - 1 ; k++){
+			
+			try{
+				adjmatrix[i][k] = temparray[i][k];
 
+			}catch(ArrayIndexOutOfBoundsException e){
+
+				// Do nothing.
+			}
+		}
+	}	
 
 	return adjmatrix;
     }
