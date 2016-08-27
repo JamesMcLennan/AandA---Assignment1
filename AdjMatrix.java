@@ -38,8 +38,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void addVertex(T vertLabel) {
 
-
-
 		// Checking if variable exists;
 		if(findvertex(vertLabel) != -1){
 	
@@ -459,36 +457,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	}
 
 
-	for(int i = 0; i < verlabels.size(); i++){
-		for(int k = 0; k < verlabels.size(); k++){
 
-			try{
+	temparray = adjmatrix;
 
-				temparray[i][k] = adjmatrix[i][k];
-
-			}catch(ArrayIndexOutOfBoundsException e){
-
-				// Do nothing.
-			}
-		}
-	}
-		
 	// Creating a new size array;
 	adjmatrix = new boolean[verlabels.size()][verlabels.size()];
 
-	for(int i = 0; i < verlabels.size(); i++){
-		for(int k = 0; k < verlabels.size() ; k++){
-			
-			try{
-	
-				adjmatrix[i][k] = temparray[i][k];
+	adjmatrix = temparray;
 
-			}catch(ArrayIndexOutOfBoundsException e){
-
-				// Do nothing.
-			}
-		}
-	}	
 
 	return adjmatrix;
     }
