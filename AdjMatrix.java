@@ -162,9 +162,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		temp = location;
 
 		// Shuffling the boolean matrix (horizontally) to -1;
-		while(temp < 10){
+		while(temp < verlabels.size()){
 
-			for(int i = 0; i < 10; i++){
+			for(int i = 0; i < verlabels.size(); i++){
 
 				try{
 					if(i == adjmatrix.length - 1){
@@ -188,9 +188,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		temp = location;
 	
 		// Shuffling the boolean matrix vertically;
-		while(temp < 10){
+		while(temp < verlabels.size()){
 
-			for(int i = 0; i < 10; i++){
+			for(int i = 0; i < verlabels.size(); i++){
 
 				try{
 					if(i == adjmatrix.length - 1){
