@@ -78,7 +78,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		// is symtrical;
 		if((adjmatrix[src_location][tar_location] == true)){
 			
-			//System.out.println("[!] Edge exists.");
+			System.out.println("[!] Edge exists.");
 
 		}else {
 
