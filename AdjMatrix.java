@@ -64,39 +64,31 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     public void addEdge(T srcLabel, T tarLabel) {
 
 	// Variables for use;
-	int src_location = -1;
-	int tar_location = -1;
+	int src_location = findvertex(srcLabel);
+	int tar_location = findvertex(tarLabel);
 
-	// Checking the srcLabel location with a for loop;
-	for(int i = 0; i < verlabels.size(); i++){
+	if(src_location == -1 || tar_location == -1){
 
-		try{
-			if(verlabels.get(i).equals(srcLabel)){
+		System.out.println("Not possible to make an edge.");
+
+	}else{
+
+		// Checking if they are currently not an Edge;	
+		// Checking only the column and row as the graph
+		// is symtrical;
+		if((adjmatrix[src_location][tar_location] == true)){
 			
-				src_location = i;
-			} 
+			//System.out.println("[!] Edge exists.");
 
-			if(verlabels.get(i).equals(tarLabel)){
-			
-				tar_location = i;
-			} 		
+		}else {
 
-		}catch (NullPointerException e){
-
-			// Do nothing;
+			adjmatrix[src_location][tar_location] = true;
+			adjmatrix[tar_location][src_location] = true;
 		}
+	
+
 	}
 
-
-	if((src_location == -1) || (tar_location == -1)){
-
-		System.out.println("[!] Not a valid edge. ");
-		
-	}else {
-
-		adjmatrix[src_location][tar_location] = true;
-		adjmatrix[tar_location][src_location] = true;
-	}
 
     } // end of addEdge()
 	
