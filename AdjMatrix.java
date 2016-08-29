@@ -41,7 +41,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		// Checking if variable exists;
 		if(findvertex(vertLabel) != -1){
 	
-			//System.out.println("[!] Vertex already exists, please use a different value.");
+			System.out.println("[!] Vertex already exists, please use a different value.");
 
 		}else {
 
@@ -127,7 +127,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Variables for use;
 	int location = findvertex(vertLabel);
 	int temp = location;
-	
+
 	// Checking if the vertex actually exists.
 	// findvertex() returns -1 if it doesn't.
 	if(location == -1){
@@ -154,19 +154,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		temp = location;
 
 		// Shuffling the boolean matrix (horizontally) to -1;
-		while(temp < verlabels.size()){
+		while(temp < verlabels.size() + 1){
 
-			for(int i = 0; i < verlabels.size(); i++){
+			for(int i = 0; i < verlabels.size() + 1; i++){
 
 				try{
-					if(i == adjmatrix.length - 1){
-	
-						adjmatrix[i][temp] = false;
-
-					}else {
-
-						adjmatrix[i][temp] = adjmatrix[i][temp + 1];
-					}
+				
+					adjmatrix[i][temp] = adjmatrix[i][temp + 1];
+				
 
 				}catch(ArrayIndexOutOfBoundsException e){
 					
@@ -180,20 +175,16 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		temp = location;
 	
 		// Shuffling the boolean matrix vertically;
-		while(temp < verlabels.size()){
+		while(temp < verlabels.size() + 1){
 
-			for(int i = 0; i < verlabels.size(); i++){
+			for(int i = 0; i < verlabels.size() + 1; i++){
 
 				try{
-					if(i == adjmatrix.length - 1){
-	
-						adjmatrix[temp][i] = false;
 
-					}else {
-
-						adjmatrix[temp][i] = adjmatrix[temp + 1][i];
+			
+					adjmatrix[temp][i] = adjmatrix[temp + 1][i];
 					
-					}
+					
 
 				}catch(ArrayIndexOutOfBoundsException e){
 					
@@ -204,6 +195,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			temp++;
 		}
 
+
 		// Checking if the size of the matrix has changed;
 		if(adjmatrix.length > verlabels.size()){
 		
@@ -212,6 +204,8 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}
 				
 	}
+				
+
 
      } // end of removeVertex()
 	
@@ -264,8 +258,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     
     public void printEdges(PrintWriter os) {
 
-	
-	  
+		  
 	// Checking the boolean adjmatrix, if true prints out the edges.
 	for(int i = 0; i < verlabels.size(); i++){
 
@@ -456,7 +449,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	adjmatrix = new boolean[verlabels.size()][verlabels.size()];
 
 	for(int i = 0; i < verlabels.size(); i++){
-		for(int k = 0; k < verlabels.size() - 1 ; k++){
+		for(int k = 0; k < verlabels.size(); k++){
 			
 			try{
 				adjmatrix[i][k] = temparray[i][k];
