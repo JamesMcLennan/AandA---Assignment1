@@ -137,13 +137,10 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	}else {
 		
 		// Moving the vertlabels to -1 position;
-		while(temp < verlabels.size()){
+		while(temp < verlabels.size() - 1){
 
-			if(temp != verlabels.size() - 1){
+			verlabels.set(temp, verlabels.get(temp + 1));
 			
-				verlabels.set(temp, verlabels.get(temp + 1));
-			}
-
 			temp++;
 		} 
 		
@@ -159,9 +156,13 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			for(int i = 0; i < verlabels.size() + 1; i++){
 
 				try{
-				
-					adjmatrix[i][temp] = adjmatrix[i][temp + 1];
-				
+					if(i == adjmatrix.length - 1){
+
+						// Do nothing;
+
+					}else{
+						adjmatrix[i][temp] = adjmatrix[i][temp + 1];
+					}
 
 				}catch(ArrayIndexOutOfBoundsException e){
 					
@@ -180,10 +181,14 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 			for(int i = 0; i < verlabels.size() + 1; i++){
 
 				try{
+					if(i == adjmatrix.length - 1){
 
-			
-					adjmatrix[temp][i] = adjmatrix[temp + 1][i];
-					
+							// Do nothing;
+
+					}else{
+
+						adjmatrix[temp][i] = adjmatrix[temp + 1][i];
+					}
 					
 
 				}catch(ArrayIndexOutOfBoundsException e){
@@ -204,7 +209,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 		}
 				
 	}
-				
 
 
      } // end of removeVertex()
