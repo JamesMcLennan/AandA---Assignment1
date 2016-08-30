@@ -145,6 +145,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 	    }
     } // end of addEdge()
 	
+	@SuppressWarnings("unchecked")
     public ArrayList<T> neighbours(T vertLabel) {
         ArrayList<T> neighbours = new ArrayList<T>();
         node temp;
@@ -170,6 +171,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     public void removeVertex(T vertLabel) {
         node temp = null;
         boolean found = false;
+		
     	for(int i = 0; i < LinkedArray.length; i++) {
         	temp = LinkedArray[i];
         	if(temp.vertex != null) {
@@ -183,7 +185,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
         				if(temp.nextNode != null) {
         					temp.deleteNodeInList(temp, vertLabel);
         				}
-        				break;
+						break;
         			}
         		}
         	}
@@ -192,17 +194,19 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 		       		temp.deleteNodeInList(temp, vertLabel);
 		       	}
         	}
-        }
+		}
     	
-    	if(found == false) {
-    		throw new IllegalArgumentException("[!] IA Exception *RV* - Node does not exist");
+		if(found == false) {
+    		
+			throw new IllegalArgumentException("[!] IA Exception *RV* - Node does not exist");
     	}
+		
     } // end of removeVertex()
 	
     public void removeEdge(T srcLabel, T tarLabel) {
     	node source = null, target = null;
     	int srcPos = exists, tarPos = exists;
-    	
+        
     	srcPos = findVertex(LinkedArray, srcLabel);
     	tarPos = findVertex(LinkedArray, tarLabel);
     	
@@ -239,10 +243,12 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     
     @SuppressWarnings("unchecked")
 	public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	int srcPos = -1, tarPos = -1, prevPos = 0;
+		int srcPos = -1, tarPos = -1, prevPos = 0;
     	for(int i = 0; i < LinkedArray.length; i++) {
-    		LinkedArray[i].visited = false;
-			LinkedArray[i].pos = -1;
+    		if(LinkedArray[i].visited != false) {
+				LinkedArray[i].visited = false;
+				LinkedArray[i].pos = -1;
+			}
     	}
     	
     	srcPos = findVertex(LinkedArray, vertLabel1);
@@ -277,11 +283,9 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 		    				queue.add(LinkedArray[found]);
 		    				LinkedArray[found].parentNode = peek;
 							if(LinkedArray[found].pos != -1) {
-								System.out.println("Initial Pos: " + LinkedArray[found].pos);
 								int test = LinkedArray[found].parentNode.pos + 1;
 								if(test < LinkedArray[found].pos) {
 									LinkedArray[found].pos = test;
-									System.out.println("New Pos: " + LinkedArray[found].pos);
 								}
 							}
 		    				LinkedArray[found].pos = LinkedArray[found].parentNode.pos + 1;
@@ -298,7 +302,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 	    		path++;
 	    		peek = queue.peek();
 	    		if(queue.isEmpty()) {
-	    			break;
+					break;
 	    		}
 	    	}
 	    }
