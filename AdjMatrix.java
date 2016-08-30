@@ -69,7 +69,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 	if(src_location == -1 || tar_location == -1){
 
-		System.out.println("Not possible to make an edge.");
+		System.out.println("[!] Not possible to make an edge.");
 
 	}else{
 
