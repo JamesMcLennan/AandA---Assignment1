@@ -290,7 +290,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	// Checking if any of those vertexes actually exists;
 	if(vert1_location == -1 || vert2_location == -1){
 		
-		System.out.println("[!] Impossible to find a path.");
+		System.out.println("[!] Vertex(s) doesn't exist.");
 		return -1;
 	}
 
